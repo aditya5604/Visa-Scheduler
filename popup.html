@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root" class="bg-white p-6 rounded-lg shadow-md w-80">
+        <!-- Dropdown menu for profile options -->
+        <label for="profiles" class="block font-semibold mb-1 text-base">Select Profile:</label>
+        <select id="profiles" name="profiles"
+            class="border border-gray-300 rounded px-3 py-2 w-full mb-4 focus:outline-none focus:border-blue-500 text-base">
+            <option value="profile1">Profile 1</option>
+            <option value="profile2">Profile 2</option>
+            <option value="profile3">Profile 3</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <!-- Space for CAPTCHA input -->
+        <label for="captchaInput" class="block font-semibold mb-1 text-base">Enter CAPTCHA:</label>
+        <input type="text" id="captchaInput" name="captchaInput" placeholder="Enter text here"
+            class="border border-gray-300 rounded px-3 py-2 w-full mb-4 focus:outline-none focus:border-blue-500 text-base">
+
+        <!-- Submit CAPTCHA Button -->
+        <button id="submitCaptchaButton"
+            class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2 w-full mb-4 transition duration-300 text-base">Submit
+            CAPTCHA</button>
+
+        <!-- Timer -->
+        <div id="timer" class="text-center text-green-500 text-lg mb-4"></div>
+
+        <!-- Start Scheduler Button -->
+        <button id="startSchedulerButton"
+            class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2 w-full mb-4 transition duration-300 text-base">Start
+            Scheduler</button>
+
+        <!-- Stop Scheduler Button -->
+        <button id="stopSchedulerButton"
+            class="bg-red-500 hover:bg-red-600 text-white rounded px-4 py-2 w-full transition duration-300 text-base">Stop
+            Scheduler</button>
+
+        <!-- Settings Icon Button -->
+        <a href="extension_settings.html" target="_blank"
+            class="block text-center text-gray-600 hover:text-gray-800 text-sm mt-4">Extension Settings</a>
+    </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

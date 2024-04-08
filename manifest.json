@@ -1,0 +1,11 @@
+{
+    "manifest_version": 3,
+    "name": "US Visa Appointment Scheduler",
+    "description": "Under Devlopment",
+    "version": "1.0",
+    "permissions": ["tabs", "storage"],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": "gmKIT88Ha1z8VBMJFOOH.png"
+    }
+}
