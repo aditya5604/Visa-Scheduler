@@ -172,7 +172,7 @@
                     <img class="body1-icon" src="icons8-info.svg" alt="">
                     <p class="body1-text">Add Security Questions:</p>
                 </div>
-                <div class="section-4-inputs">
+                <div id="section-4-inputs-first">
                     <div class="question-button">
                         <select id="question-box">
                             <option value="">Questions</option>
@@ -184,6 +184,37 @@
                     <div class="answer-button">
                         <input type="text" name="" id="answer-box" placeholder="Answer">
                     </div>
+                    <button id="ques2-button">Add</button>
+                </div>
+
+                <div id="section-4-inputs-second">
+                    <div class="question-button">
+                        <select id="question-box">
+                            <option value="">Questions</option>
+                            <option value="first">Q1</option>
+                            <option value="second">Q2</option>
+                            <option value="third">Q3</option>
+                        </select>
+                    </div>
+                    <div class="answer-button">
+                        <input type="text" name="" id="answer-box" placeholder="Answer">
+                    </div>
+                    <button id="ques3-button">Add</button>
+                    <button id="clear-ques2">Clear</button>
+                </div>
+                <div id="section-4-inputs-third">
+                    <div class="question-button">
+                        <select id="question-box">
+                            <option value="">Questions</option>
+                            <option value="first">Q1</option>
+                            <option value="second">Q2</option>
+                            <option value="third">Q3</option>
+                        </select>
+                    </div>
+                    <div class="answer-button">
+                        <input type="text" name="" id="answer-box" placeholder="Answer">
+                    </div>
+                    <button id="clear-ques3">Clear</button>
                 </div>
             </div>
             <hr class="hero-sec-divider">
@@ -308,6 +339,32 @@
                 hiddenText.atyle.position = 'absolute';
             }
         });
+        document.getElementById('ques2-button').addEventListener('click', function () {
+
+var hiddenText = document.getElementById('section-4-inputs-second');
+if (hiddenText.style.visibility === 'hidden') {
+    hiddenText.style.visibility = 'visible';
+}
+else {
+    hiddenText.style.visibility = 'hidden';
+    hiddenText.atyle.position = 'absolute';
+}
+});
+document.getElementById('ques3-button').addEventListener('click', function () {
+
+var hiddenText = document.getElementById('section-4-inputs-third');
+    hiddenText.style.visibility = 'visible';
+});
+document.getElementById('clear-ques2').addEventListener('click', function () {
+
+var hiddenText = document.getElementById('section-4-inputs-second');
+    hiddenText.style.visibility = 'hidden';
+});
+document.getElementById('clear-ques3').addEventListener('click', function () {
+
+var hiddenText = document.getElementById('section-4-inputs-third');
+    hiddenText.style.visibility = 'hidden';
+});
     </script>
 </body>
 
