@@ -245,7 +245,7 @@ input:checked+.slider:before {
 }
 
 .sec-4-button {
-  position: relative;
+  position:  relative;
   margin-top: 25px;
   height: 40px;
   width: 100%;
