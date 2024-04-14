@@ -60,7 +60,7 @@ function fetchAndDisplayCaptchaImage() {
 // Submit CAPTCHA text to server
 function submitCaptchaText() {
   const captchaInput = document.getElementById("captchaInput").value;
-  fetch("/captcha_input", {
+  fetch("http://localhost:5000/captcha_input", {
       method: "POST",
       headers: {
           "Content-Type": "application/json"

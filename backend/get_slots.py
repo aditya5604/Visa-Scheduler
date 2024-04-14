@@ -13,8 +13,15 @@ from PIL import Image
 import io
 import os.path
 
-def receive_captcha_input(self, captcha_data):
-    return captcha_data
+captcha_input = None
+
+def receive_captcha_input(input_data):
+    global captcha_input
+    captcha_input = input_data
+
+def get_captcha_input():
+    global captcha_input
+    return captcha_input
 
 class SlotFinder:
     def __init__(self):
@@ -69,19 +76,23 @@ class SlotFinder:
         # Save the cropped captcha image
         captcha_image.save("../Image/captcha_image.png")
 
-    def get_capcha_text(self):
+    def get_capcha_text(self , counter):
         try: 
                 captcha_text = None
+                
+                if counter > 1:
+                    # Clear the stored captcha input
+                    receive_captcha_input(None)
+                
+                # Save the CAPTCHA image
+                self.save_captcha_image()
 
                 while not captcha_text:
                     try:
-                        # Save the CAPTCHA image
-                        self.save_captcha_image()
 
-                        # Wait for the CAPTCHA input from the frontend
-                        time.sleep(1)  # Adjust the sleep time as needed
+                        time.sleep(1)
+                        captcha_text = get_captcha_input()
 
-                        captcha_text = receive_captcha_input()
                     except NoSuchElementException:
                         print("CAPTCHA input not received yet. Waiting...")
 
@@ -93,6 +104,7 @@ class SlotFinder:
                 captcha_field = self.driver.find_element(
                     By.ID, "extension_atlasCaptchaResponse"
                 )
+                captcha_field.clear()
                 captcha_field.send_keys(captcha_text)
 
         except Exception as e:
@@ -100,51 +112,59 @@ class SlotFinder:
 
     def find_my_slots(self, username, password , security_questionsanswers):
         try:
+            self.driver.get("https://www.usvisascheduling.com/")
+
+            time.sleep(10)
+
             # Find the username and password fields and enter the user-provided values
             username_field = self.driver.find_element(By.ID, "signInName")
             username_field.send_keys(username)
 
             password_field = self.driver.find_element(By.ID, "password")
             password_field.send_keys(password)
+            counter = 0 
 
-            self.get_capcha_text()
+            self.get_capcha_text(counter)
 
             # Find the sign-in button and click it
             sign_in_button = self.driver.find_element(By.ID, "continue")
             sign_in_button.click()
 
             try:
-                # Check if the captcha verification was successful
-                captcha_reverification_required = not self.driver.find_elements(
-                    By.ID, "claimVerificationServerError"
-                )
 
-                # If the captcha verification was not successful, refresh the captcha
-                if not captcha_reverification_required:
-                    # Use JavaScript to click the captcha refresh button
-                    captcha_refresh_button = self.driver.find_element(
-                        By.ID, "captchaRefreshImage"
-                    )
-                    self.driver.execute_script(
-                        "arguments[0].click();", captcha_refresh_button
+                while(True):
+                    # Check if the captcha verification was successful
+                    captcha_reverification_required = not self.driver.find_elements(
+                        By.ID, "claimVerificationServerError"
                     )
 
-                    # Wait for the new captcha image to load
-                    # You may need to adjust the sleep time based on the website's behavior
-                    time.sleep(3)
+                    # If the captcha verification was not successful, refresh the captcha
+                    if not captcha_reverification_required:
+                        # Use JavaScript to click the captcha refresh button
+                        captcha_refresh_button = self.driver.find_element(
+                            By.ID, "captchaRefreshImage"
+                        )
+                        self.driver.execute_script(
+                            "arguments[0].click();", captcha_refresh_button
+                        )
 
-                    captcha_field = self.driver.find_element(
-                        By.ID, "extension_atlasCaptchaResponse"
-                    )
-                    captcha_field.clear()
+                        # Wait for the new captcha image to load
+                        # You may need to adjust the sleep time based on the website's behavior
+                        time.sleep(3)
 
-                    self.save_captcha_image(self.driver)
+                        captcha_field = self.driver.find_element(
+                            By.ID, "extension_atlasCaptchaResponse"
+                        )
+                        captcha_field.clear()
 
-                    self.get_capcha_text()
+                        counter += 1
+                        self.get_capcha_text(counter)
 
-                    # Find the sign-in button and click it
-                    sign_in_button = self.driver.find_element(By.ID, "continue")
-                    sign_in_button.click()
+                        # Find the sign-in button and click it
+                        sign_in_button = self.driver.find_element(By.ID, "continue")
+                        sign_in_button.click()
+                    else:
+                        break
             except NoSuchElementException:
                 print("Captcha verification successful")
 
