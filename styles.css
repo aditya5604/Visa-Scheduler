@@ -294,6 +294,19 @@ input:checked+.slider:before {
   height: 100%;
 }
 
+.login-button {
+  display: block;
+  margin: 0 auto;
+  margin-top: -5px; /* Move the button 20px up */
+  padding: 15px 30px; /* Increase padding to increase button size */
+  font-size: 10px; /* Increase font size */
+  background-color: black; /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* Remove button border */
+  border-radius: 0px; /* Add border radius for rounded corners */
+  cursor: pointer;
+}
+
 .section-4-inputs {
     display: flex;
     width: 100%;
@@ -325,6 +338,24 @@ input:checked+.slider:before {
     background-color: white;
     border: 1px solid black;
     padding-left: 15px;
+}
+
+.submit-button {
+  text-align: center; /* Center-align the content inside the div */
+  margin-top: -20px; /* Move the button 20px up */
+}
+
+.submit-button button {
+  display: block;
+  margin: 0 auto;
+  margin-top: -20px; /* Move the button 20px up */
+  padding: 15px 30px; /* Increase padding to increase button size */
+  font-size: 15px; /* Increase font size */
+  background-color: black; /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* Remove button border */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  cursor: pointer;
 }
 
 #alert-text {

@@ -177,82 +177,89 @@
                     <img class="body1-icon" src="icons8-info.svg" alt="">
                     <p class="body1-text">Add Security Questions:</p>
                 </div>
-                <div class="section-4-inputs">
-                    <div class="question-button">
-                        <select id="question-box-1">
-                            <option value="">Select a security question</option>
-                            <option value="Where did you meet your spouse?">Where did you meet your spouse?</option>
-                            <option value="What is your sibling's middle name?">What is your sibling's middle name?</option>
-                            <option value="Who was your childhood hero?">Who was your childhood hero?</option>
-                            <option value="In what city or town was your first job?">In what city or town was your first job?</option>
-                            <option value="What is the name of a college you applied to but didn’t attend?">What is the name of a college you applied to but didn’t attend?</option>
-                            <option value="What is the name of the road/street you grew up on?">What is the name of the road/street you grew up on?</option>
-                            <option value="What is your least favorite food?">What is your least favorite food?</option>
-                            <option value="What was the first company that you worked for?">What was the first company that you worked for?</option>
-                            <option value="What is your favorite food?">What is your favorite food?</option>
-                            <option value="What high school did you attend?">What high school did you attend?</option>
-                            <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
-                            <option value="What was the name of your first/current/favorite pet?">What was the name of your first/current/favorite pet?</option>
-                            <option value="What was your first car?">What was your first car?</option>
-                            <option value="What elementary school did you attend?">What elementary school did you attend?</option>
-                            <option value="What is the name of the town/city where you were born?">What is the name of the town/city where you were born?</option>
-                        </select>
+                <div class="Get-security-q&a">
+                    <form action="http://localhost:5000/security_question" method="post">
+                    <div class="section-4-inputs">
+                        <div class="question-button">
+                            <select id="question-box-1" name="question_1">
+                                <option value="">Select a security question</option>
+                                <option value="Where did you meet your spouse?">Where did you meet your spouse?</option>
+                                <option value="What is your sibling's middle name?">What is your sibling's middle name?</option>
+                                <option value="Who was your childhood hero?">Who was your childhood hero?</option>
+                                <option value="In what city or town was your first job?">In what city or town was your first job?</option>
+                                <option value="What is the name of a college you applied to but didn’t attend?">What is the name of a college you applied to but didn’t attend?</option>
+                                <option value="What is the name of the road/street you grew up on?">What is the name of the road/street you grew up on?</option>
+                                <option value="What is your least favorite food?">What is your least favorite food?</option>
+                                <option value="What was the first company that you worked for?">What was the first company that you worked for?</option>
+                                <option value="What is your favorite food?">What is your favorite food?</option>
+                                <option value="What high school did you attend?">What high school did you attend?</option>
+                                <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                                <option value="What was the name of your first/current/favorite pet?">What was the name of your first/current/favorite pet?</option>
+                                <option value="What was your first car?">What was your first car?</option>
+                                <option value="What elementary school did you attend?">What elementary school did you attend?</option>
+                                <option value="What is the name of the town/city where you were born?">What is the name of the town/city where you were born?</option>
+                            </select>
+                        </div>
+                        <div class="answer-button">
+                            <input type="text"  id="answer-box-1" name="answer_1" placeholder="Answer">
+                        </div>
                     </div>
-                    <div class="answer-button">
-                        <input type="text" name="" id="answer-box-1" placeholder="Answer">
+            
+                    <div class="section-4-inputs">
+                        <div class="question-button">
+                            <select id="question-box-2" name="question_2">
+                                <option value="">Select a security question</option>
+                                <option value="Where did you meet your spouse?">Where did you meet your spouse?</option>
+                                <option value="What is your sibling's middle name?">What is your sibling's middle name?</option>
+                                <option value="Who was your childhood hero?">Who was your childhood hero?</option>
+                                <option value="In what city or town was your first job?">In what city or town was your first job?</option>
+                                <option value="What is the name of a college you applied to but didn’t attend?">What is the name of a college you applied to but didn’t attend?</option>
+                                <option value="What is the name of the road/street you grew up on?">What is the name of the road/street you grew up on?</option>
+                                <option value="What is your least favorite food?">What is your least favorite food?</option>
+                                <option value="What was the first company that you worked for?">What was the first company that you worked for?</option>
+                                <option value="What is your favorite food?">What is your favorite food?</option>
+                                <option value="What high school did you attend?">What high school did you attend?</option>
+                                <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                                <option value="What was the name of your first/current/favorite pet?">What was the name of your first/current/favorite pet?</option>
+                                <option value="What was your first car?">What was your first car?</option>
+                                <option value="What elementary school did you attend?">What elementary school did you attend?</option>
+                                <option value="What is the name of the town/city where you were born?">What is the name of the town/city where you were born?</option>
+                            </select>
+                        </div>
+                        <div class="answer-button">
+                            <input type="text" id="answer-box-2" name="answer_2" placeholder="Answer">
+                        </div>
                     </div>
-                </div>
-        
-                <div class="section-4-inputs">
-                    <div class="question-button">
-                        <select id="question-box-2">
-                            <option value="">Select a security question</option>
-                            <option value="Where did you meet your spouse?">Where did you meet your spouse?</option>
-                            <option value="What is your sibling's middle name?">What is your sibling's middle name?</option>
-                            <option value="Who was your childhood hero?">Who was your childhood hero?</option>
-                            <option value="In what city or town was your first job?">In what city or town was your first job?</option>
-                            <option value="What is the name of a college you applied to but didn’t attend?">What is the name of a college you applied to but didn’t attend?</option>
-                            <option value="What is the name of the road/street you grew up on?">What is the name of the road/street you grew up on?</option>
-                            <option value="What is your least favorite food?">What is your least favorite food?</option>
-                            <option value="What was the first company that you worked for?">What was the first company that you worked for?</option>
-                            <option value="What is your favorite food?">What is your favorite food?</option>
-                            <option value="What high school did you attend?">What high school did you attend?</option>
-                            <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
-                            <option value="What was the name of your first/current/favorite pet?">What was the name of your first/current/favorite pet?</option>
-                            <option value="What was your first car?">What was your first car?</option>
-                            <option value="What elementary school did you attend?">What elementary school did you attend?</option>
-                            <option value="What is the name of the town/city where you were born?">What is the name of the town/city where you were born?</option>
-                        </select>
+            
+                    <div class="section-4-inputs">
+                        <div class="question-button">
+                            <select id="question-box-3" name="question_3">
+                                <option value="">Select a security question</option>
+                                <option value="Where did you meet your spouse?">Where did you meet your spouse?</option>
+                                <option value="What is your sibling's middle name?">What is your sibling's middle name?</option>
+                                <option value="Who was your childhood hero?">Who was your childhood hero?</option>
+                                <option value="In what city or town was your first job?">In what city or town was your first job?</option>
+                                <option value="What is the name of a college you applied to but didn’t attend?">What is the name of a college you applied to but didn’t attend?</option>
+                                <option value="What is the name of the road/street you grew up on?">What is the name of the road/street you grew up on?</option>
+                                <option value="What is your least favorite food?">What is your least favorite food?</option>
+                                <option value="What was the first company that you worked for?">What was the first company that you worked for?</option>
+                                <option value="What is your favorite food?">What is your favorite food?</option>
+                                <option value="What high school did you attend?">What high school did you attend?</option>
+                                <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                                <option value="What was the name of your first/current/favorite pet?">What was the name of your first/current/favorite pet?</option>
+                                <option value="What was your first car?">What was your first car?</option>
+                                <option value="What elementary school did you attend?">What elementary school did you attend?</option>
+                                <option value="What is the name of the town/city where you were born?">What is the name of the town/city where you were born?</option>
+                            </select>
+                        </div>
+                        <div class="answer-button">
+                            <input type="text" id="answer-box-3" name="answer_3" placeholder="Answer">
+                        </div>
                     </div>
-                    <div class="answer-button">
-                        <input type="text" name="" id="answer-box-2" placeholder="Answer">
+                    <div class="submit-button">
+                        <button type="submit" class="submit-button">Submit</button>
                     </div>
-                </div>
-        
-                <div class="section-4-inputs">
-                    <div class="question-button">
-                        <select id="question-box-3">
-                            <option value="">Select a security question</option>
-                            <option value="Where did you meet your spouse?">Where did you meet your spouse?</option>
-                            <option value="What is your sibling's middle name?">What is your sibling's middle name?</option>
-                            <option value="Who was your childhood hero?">Who was your childhood hero?</option>
-                            <option value="In what city or town was your first job?">In what city or town was your first job?</option>
-                            <option value="What is the name of a college you applied to but didn’t attend?">What is the name of a college you applied to but didn’t attend?</option>
-                            <option value="What is the name of the road/street you grew up on?">What is the name of the road/street you grew up on?</option>
-                            <option value="What is your least favorite food?">What is your least favorite food?</option>
-                            <option value="What was the first company that you worked for?">What was the first company that you worked for?</option>
-                            <option value="What is your favorite food?">What is your favorite food?</option>
-                            <option value="What high school did you attend?">What high school did you attend?</option>
-                            <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
-                            <option value="What was the name of your first/current/favorite pet?">What was the name of your first/current/favorite pet?</option>
-                            <option value="What was your first car?">What was your first car?</option>
-                            <option value="What elementary school did you attend?">What elementary school did you attend?</option>
-                            <option value="What is the name of the town/city where you were born?">What is the name of the town/city where you were born?</option>
-                        </select>
-                    </div>
-                    <div class="answer-button">
-                        <input type="text" name="" id="answer-box-3" placeholder="Answer">
-                    </div>
+                    </form>
                 </div>
             </div>
             <hr class="hero-sec-divider">
