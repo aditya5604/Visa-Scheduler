@@ -1,8 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA Example</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .captcha-image {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -22,6 +31,9 @@
         <label for="captchaInput" class="block font-semibold mb-1 text-base">Enter CAPTCHA:</label>
         <input type="text" id="captchaInput" name="captchaInput" placeholder="Enter text here"
             class="border border-gray-300 rounded px-3 py-2 w-full mb-4 focus:outline-none focus:border-blue-500 text-base">
+
+        <!-- CAPTCHA image -->
+        <img id="captchaImage" class="captcha-image" src="" alt="CAPTCHA Image" style="display: none;">
 
         <!-- Submit CAPTCHA Button -->
         <button id="submitCaptchaButton"
@@ -46,6 +58,8 @@
             class="block text-center text-gray-600 hover:text-gray-800 text-sm mt-4">Extension Settings</a>
     </div>
 
-  <script src="script.js"></script>
+    <!-- External JavaScript file -->
+    <script src="script.js"></script>
 </body>
+
 </html>
