@@ -1,12 +1,7 @@
 from flask import Flask, request, jsonify , send_file
 from flask_cors import CORS
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium_stealth import stealth
+import asyncio
+import nodriver as uc
 import time
 import os.path
 from PIL import Image
@@ -56,19 +51,21 @@ def security_question_route():
 @app.route("/captcha_input", methods=["POST"])
 def receive_captcha_from_frontend():
     captcha_data = request.json.get("captcha_input")
+    print(captcha_data)
     receive_captcha_input(captcha_data)
     return "CAPTCHA input received successfully"
 
 @app.route("/start_process", methods=["GET"])
-def start_process():
+async def start_process():
     global login_details, security_questions
     print(login_details)
     print(security_questions)
     # Check if login details and security questions are available
     if "username" in login_details and "password" in login_details and security_questions:
         # Start the process with Selenium
-        slot_finder = SlotFinder()
-        slot_finder.find_my_slots(login_details["username"], login_details["password"] , security_questions)
+
+        slot_finder = await SlotFinder().create()
+        await slot_finder.find_my_slots(login_details["username"], login_details["password"], security_questions)
         return jsonify({"status": "success"})
     else:
         return jsonify({"error": "Login details or security questions not provided"})

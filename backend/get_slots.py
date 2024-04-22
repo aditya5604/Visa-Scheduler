@@ -1,17 +1,15 @@
 import undetected_chromedriver as uc
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium_stealth import stealth
-from selenium.webdriver.chrome.service import Service as ChromeService
 import time
 from PIL import Image
+import shutil
 import io
 import os.path
+import nodriver as uc
+import logging
+import time
+import io
+from PIL import Image
+import asyncio
 
 captcha_input = None
 
@@ -24,59 +22,49 @@ def get_captcha_input():
     return captcha_input
 
 class SlotFinder:
-    def __init__(self):
-        # set the user agent
-        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.105 Safari/537.36"
-        # Set Chrome options
-        chrome_options = uc.ChromeOptions()
-        # chrome_options.add_argument("--headless=new")  # Set to True if you want to run in headless mode
-        chrome_options.add_argument("--start-maximized")
-        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
-        # Create a new Selenium Chrome Service
-        service = Service('/usr/bin/google-chrome-stable')
-        # service = ChromeService(ChromeDriverManager().install())
-
-        # Start the WebDriver
-        self.driver = uc.Chrome(service=service, options=chrome_options)
-
-        # Use the stealth module to make the bot undetectable
-        stealth(
-            self.driver,
-            user_agent=user_agent,
-            languages=["en-US", "en"],
-            vendor="Google Inc.",
-            platform="Win32",
-            webgl_vendor="Intel Inc.",
-            renderer="Intel Iris OpenGL Engine",
-            fix_hairline=False,
-            run_on_insecure_origins=False,
-        )
+    @classmethod
+    async def create(cls):
+        self = SlotFinder()
+        
+        # Initialize the WebDriver instance
+        self.driver = await uc.start()
+        
+        # Navigate to the URL and initialize the browser tab
+        self.tab = await self.driver.get("https://www.usvisascheduling.com/")
+        
+        return self
 
 
-
-    def save_captcha_image(self):
+    async def save_captcha_image(self):
 
         # Get the bounding box of the image
-        img = self.driver.find_element(By.ID, "captchaImage")
-        print(img.size)
-        image_location = img.location
-        image_size = img.size
+        captcha_image_node_id = await self.tab.query_selector("#captchaImage")
+        attributes = await captcha_image_node_id.get_js_attributes()
+        style_attribute = attributes.get("style", "")
+        height = int((style_attribute.get("height")).replace("px", ""))
+        width = int(style_attribute.get("width").replace("px", ""))
+        location_x = attributes.get("x")
+        location_y = attributes.get("y")
         image_bounding_box = (
-            image_location["x"],
-            image_location["y"],
-            image_location["x"] + image_size["width"],
-            image_location["y"] + image_size["height"],
+            location_x,
+            location_y,
+            location_x + width,
+            location_y + height,
         )
 
         # Take a screenshot of the specific area
-        screenshot = self.driver.get_screenshot_as_png()
+        screenshot = await self.tab.save_screenshot(filename="../Image/Full_image.png")
+        with open(screenshot, 'rb') as f:
+            screenshot = f.read()
         captcha_image = Image.open(io.BytesIO(screenshot)).crop(image_bounding_box)
+
 
         # Save the cropped captcha image
         captcha_image.save("../Image/captcha_image.png")
+        shutil.rmtree("../Image/Full_image.png")
 
-    def get_capcha_text(self , counter):
+    async def get_capcha_text(self , counter):
         try: 
                 captcha_text = None
                 
@@ -85,112 +73,102 @@ class SlotFinder:
                     receive_captcha_input(None)
                 
                 # Save the CAPTCHA image
-                self.save_captcha_image()
+                await self.save_captcha_image()
 
                 while not captcha_text:
+                    print("Waiting for CAPTCHA input...")
                     try:
 
-                        time.sleep(1)
+                        await self.tab.sleep(1)
                         captcha_text = get_captcha_input()
+                        print("CAPTCHA input received successfully" , captcha_text)
 
-                    except NoSuchElementException:
+                    except asyncio.exceptions.TimeoutError:
                         print("CAPTCHA input not received yet. Waiting...")
 
+                print("CAPTCHA input hmmm")
                 if not captcha_text:
                     # Get the captcha image and extract text using pytesseract
-                    captcha_text = input("Enter the captcha text: ")
+                    await self.tab.sleep(10)
+                    print("Extracting CAPTCHA text...")
 
                 # Find the captcha input field and enter the extracted text
-                captcha_field = self.driver.find_element(
-                    By.ID, "extension_atlasCaptchaResponse"
-                )
-                captcha_field.clear()
-                captcha_field.send_keys(captcha_text)
+                captcha_field = await self.tab.select("#extension_atlasCaptchaResponse")
+                
+                await captcha_field.clear_input()
+                await captcha_field.send_keys(captcha_text)
 
         except Exception as e:
             print("Error:", str(e))
 
-    def find_my_slots(self, username, password , security_questionsanswers):
+    async def find_my_slots(self, username, password , security_questionsanswers):
         try:
-            self.driver.get("https://www.usvisascheduling.com/")
-
-            time.sleep(10)
+            await self.tab.sleep(10)
 
             # Find the username and password fields and enter the user-provided values
-            username_field = self.driver.find_element(By.ID, "signInName")
-            username_field.send_keys(username)
+            username_field = await self.tab.select("#signInName")
+            await username_field.send_keys(username)
 
-            password_field = self.driver.find_element(By.ID, "password")
-            password_field.send_keys(password)
+            password_field = await self.tab.select("#password")
+            await password_field.send_keys(password)
             counter = 0 
 
-            self.get_capcha_text(counter)
+            await self.get_capcha_text(counter)
+
+            await self.tab.sleep(5)
 
             # Find the sign-in button and click it
-            sign_in_button = self.driver.find_element(By.ID, "continue")
-            sign_in_button.click()
+            sign_in_button = await self.tab.select("#continue")
+            await sign_in_button.click()
 
             try:
 
                 while(True):
                     # Check if the captcha verification was successful
-                    captcha_reverification_required = not self.driver.find_elements(
-                        By.ID, "claimVerificationServerError"
-                    )
+                    captcha_reverification_required = await self.tab.select("#claimVerificationServerError")
 
                     # If the captcha verification was not successful, refresh the captcha
-                    if not captcha_reverification_required:
+                    if captcha_reverification_required:
                         # Use JavaScript to click the captcha refresh button
-                        captcha_refresh_button = self.driver.find_element(
-                            By.ID, "captchaRefreshImage"
-                        )
-                        self.driver.execute_script(
-                            "arguments[0].click();", captcha_refresh_button
-                        )
+                        captcha_refresh_button = await self.tab.select("#captchaRefreshImage")
+                        await captcha_refresh_button.click()
 
                         # Wait for the new captcha image to load
-                        # You may need to adjust the sleep time based on the website's behavior
-                        time.sleep(3)
+                        await self.tab.sleep(3)
 
-                        captcha_field = self.driver.find_element(
-                            By.ID, "extension_atlasCaptchaResponse"
-                        )
-                        captcha_field.clear()
+                        captcha_field = await self.tab.select("#extension_atlasCaptchaResponse")
+            
+                        await captcha_field.clear_input()
 
                         counter += 1
-                        self.get_capcha_text(counter)
+                        await self.get_capcha_text(counter)
 
+                        await self.tab.sleep(10)
+                        
                         # Find the sign-in button and click it
-                        sign_in_button = self.driver.find_element(By.ID, "continue")
-                        sign_in_button.click()
+                        sign_in_button = await self.tab.select("#continue")
+                        await sign_in_button.click()
                     else:
                         break
-            except NoSuchElementException:
+            except asyncio.exceptions.TimeoutError:
                 print("Captcha verification successful")
 
             # Wait for the security questions to appear
-            wait = WebDriverWait(self.driver, 30)
-            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "[id^='kbq']")))
+            wait = await self.tab.wait_for("[id^='kbq']")
 
             # Find the security question labels and answer fields
-            security_question_labels = self.driver.find_elements(
-                By.CSS_SELECTOR, "label[id^='kbq']"
-            )
-            security_answer_fields = self.driver.find_elements(
-                By.CSS_SELECTOR, "input[id^='kba']"
-            )
+            security_question_labels = await self.tab.select_all("p[id^='kbq']")
+            security_answer_fields = await self.tab.select_all("input[id^='kba']")
 
             # Iterate through the security questions and answer fields
             for i in range(len(security_question_labels)):
                 security_question_label = security_question_labels[i]
                 security_answer_field = security_answer_fields[i]
 
-                security_answer_field.clear()
+                await security_answer_field.clear_input()
 
                 # Get the security question text
-                security_question_text = security_question_label.find_element(
-                    By.XPATH, "./following-sibling::p"
-                ).text
+                security_question_text = security_question_label.text
                 print(f"Security Question: {security_question_text}")
 
                 corresponding_answer = None
@@ -202,41 +180,35 @@ class SlotFinder:
                         break
                 if not corresponding_answer:    
                     # Get the answer for the security question
+                    print("Please re-enter and submit the answer for the security question on the extension page.")
                     corresponding_answer = input(
                         f"Enter the answer for '{security_question_text}': "
                     )
 
                 # Send keys to the answer field
-                security_answer_field.send_keys(corresponding_answer)
+                await security_answer_field.send_keys(corresponding_answer)
 
             # Find the continue button and click it
-            continue_button = self.driver.find_element(By.ID, "continue")
-            continue_button.click()
+            continue_button = await self.tab.select("#continue")
+            await continue_button.click()
 
             # Check if the error message is displayed
             try:
                 # Wait for the error message to be displayed
-                error_message = WebDriverWait(self.driver, 10).until(
-                    EC.visibility_of_element_located(
-                        (By.ID, "claimVerificationServerError")
-                    )
-                )
+                error_message = await self.tab.wait_for("#claimVerificationServerError", timeout=10)
 
                 # Check the style attribute to see if the error is displayed
-                if error_message.get_attribute("style") == "display: block;":
-                    print("Security question answer is incorrect. Please try again.")
-
+                if error_message.text:
+                    print(error_message.text)
                     # Iterate through the security questions and answer fields
                     for i in range(len(security_question_labels)):
                         security_question_label = security_question_labels[i]
                         security_answer_field = security_answer_fields[i]
 
-                        security_answer_field.clear()
+                        await security_answer_field.clear_input()
 
                         # Get the security question text
-                        security_question_text = security_question_label.find_element(
-                            By.XPATH, "./following-sibling::p"
-                        ).text
+                        security_question_text = security_question_label.text
                         print(f"Security Question: {security_question_text}")
 
                         corresponding_answer = None
@@ -249,16 +221,17 @@ class SlotFinder:
                         
                         if not corresponding_answer:
                             # Wait for the user to input the correct answer
+                            print("Please re-enter and submit the answer for the security question on the extension page.")
                             corresponding_answer = input("Please enter the correct answer: ")
 
                         # Enter the correct answer
-                        security_answer_field.send_keys(corresponding_answer)
+                        await security_answer_field.send_keys(corresponding_answer)
 
                 # Find the continue button and click it
-                continue_button = self.driver.find_element(By.ID, "continue")
-                continue_button.click()
+                continue_button = await self.tab.select("#continue")
+                await continue_button.click()
 
-            except:
+            except asyncio.exceptions.TimeoutError:
                 print("The Security Question CheckIn Was successfull.")
 
             # Wait for 3 seconds before quitting the browser
@@ -266,38 +239,35 @@ class SlotFinder:
 
             # Check if the desired element is available after login
             try:
-                continue_application_link = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.ID, "continue_application"))
-                )
+                schedule_appointment = await self.tab.select("#continue_application")
                 # If the element is found, redirect to the specified URL
-                redirect_url = continue_application_link.get_attribute("href")
-                print("Redirecting to:", redirect_url)
-                self.driver.get(redirect_url)
-
+                await schedule_appointment.click()
+                
+                #randomly scroll page down
+                await self.tab.scroll_down()
+                # randomly scroll the page up
+                await self.tab.scroll_up()
+                
                 # Wait for the page to load
                 time.sleep(5)
 
                 # Check if the desired element is available after login
                 # gm_select FIND THE GIVEN ID
 
-                gm_select = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.ID, "gm_select"))
-                )
-                print(gm_select)
+                await self.tab.sleep(10)
 
-            except NoSuchElementException:
-                print(
-                    "The LINK 'Schedule Appointment' is not available after login. Make Sure , You have the Finished the application process on the website !"
-                )
+            except asyncio.exceptions.TimeoutError:
+                print("Error occurred while scheduling the appointment")
 
-        except NoSuchElementException:
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+        except  Exception as e:
             # Delete all cookies
-            self.driver.delete_all_cookies()
-            print("Retrying After Sometimes : Cooldown 10s")
+            print("Retrying After Sometimes,  Cooldown 10s Due to the error :" , e)
 
         # Close the browser
-        self.driver.quit()
-
+        self.driver.stop()
 
 # # Create an instance of the SlotFinder class
 # slot_finder = SlotFinder()
