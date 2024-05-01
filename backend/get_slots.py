@@ -11,6 +11,7 @@ import io
 from PIL import Image
 import asyncio
 
+logging.basicConfig(level=30)
 captcha_input = None
 
 def receive_captcha_input(input_data):
@@ -86,7 +87,6 @@ class SlotFinder:
                     except asyncio.exceptions.TimeoutError:
                         print("CAPTCHA input not received yet. Waiting...")
 
-                print("CAPTCHA input hmmm")
                 if not captcha_text:
                     # Get the captcha image and extract text using pytesseract
                     await self.tab.sleep(10)
@@ -250,9 +250,6 @@ class SlotFinder:
                 
                 # Wait for the page to load
                 time.sleep(5)
-
-                # Check if the desired element is available after login
-                # gm_select FIND THE GIVEN ID
 
                 await self.tab.sleep(10)
 
