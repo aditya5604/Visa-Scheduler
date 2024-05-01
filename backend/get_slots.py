@@ -63,7 +63,7 @@ class SlotFinder:
 
         # Save the cropped captcha image
         captcha_image.save("../Image/captcha_image.png")
-        shutil.rmtree("../Image/Full_image.png")
+        # shutil.rmtree("../Image/Full_image.png")
 
     async def get_capcha_text(self , counter):
         try: 
