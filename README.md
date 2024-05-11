@@ -35,7 +35,7 @@ To set up WebTalk-Fusion, follow these steps:
 9. **Run Python Server**:
    - Start the Python server by running the following command:
      ```bash
-     python server.py
+     python app.py
      ```
 
 10. **Deployment (Optional)**:
