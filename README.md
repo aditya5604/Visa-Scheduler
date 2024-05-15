@@ -1,5 +1,12 @@
 # Setting Up Visa-Scheduler Chrome Extension:
 
+
+
+https://github.com/AashishKumar-3002/Visa-Scheduler/assets/110625812/7d886754-f190-4330-a4e8-1a3b325cfe70
+
+
+To watch the video demo, navigate to the `statics` folder of your local copy of the repository and open the file named `demo_extension.mp4`.
+
 To set up Visa-Scheduler, follow these steps:
 
 1. **Download Repository as ZIP**:
