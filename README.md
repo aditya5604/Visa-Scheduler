@@ -1,6 +1,6 @@
-# Setting Up WebTalk-Fusion
+# Setting Up Visa-Scheduler Chrome Extension:
 
-To set up WebTalk-Fusion, follow these steps:
+To set up Visa-Scheduler, follow these steps:
 
 1. **Download Repository as ZIP**:
    - Download the repository as a ZIP file from [Visa-Scheduler GitHub Repository]([https://github.com/AashishKumar-3002/WebTalk-Fusion](https://github.com/AashishKumar-3002/Visa-Scheduler)).
@@ -50,6 +50,11 @@ To set up WebTalk-Fusion, follow these steps:
 
 11. **Access the Application**:
     - Access the application in your browser.
+
+Note: 
+1. For Mac please turn off the airplay receiver for local testing.
+2. For win , Add exclusion in the windows firewall
+3. For linux , no worries
 
 You have now successfully set up WebTalk-Fusion and can start using it for engaging conversations with websites.
 
