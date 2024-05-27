@@ -228,10 +228,11 @@ input:checked+.slider:before {
 
 .container {
   width: 100%;
-  height: 40px;
+  height: auto;
   margin-top: 15px;
   border: 1.3px solid blue;
   border-radius: 5%;
+  padding: auto;
 }
 
 .body3-text {
@@ -481,4 +482,32 @@ ero-sec-5-body1 {
 #footer-last {
   padding-bottom: 80px;
 }
+}
+
+.date-container {
+  height: 40px;
+  width: 340px;
+  border: 1px solid black;
+  border-radius: 5%;
+  margin-bottom: 10px; /* Adjust the space below the date container */
+}
+
+.date-input {
+  height: 100%;
+  width: 100%;
+  cursor: text;
+  border: none; /* Remove any border from the input */
+  padding: 0 5px; /* Add some padding inside the input */
+}
+
+.hero-sec-2-body1 {
+  display: flex;
+  flex-direction: column; /* Change to column to stack elements vertically */
+  gap: 10px; /* Adjust gap between elements */
+  margin-bottom: 20px; /* Adjust the margin at the bottom */
+}
+
+.hero-sec-2-body1 label {
+  display: block; /* Ensure the label is a block element */
+  margin-bottom: 5px; /* Space between label and input */
 }
