@@ -13,5 +13,8 @@
     "action": {
         "default_popup": "popup.html",
         "default_icon": "a79bb79a-6b62-406b-8d05-7d46e90d0a44.png"
+    },
+    "background": {
+        "service_worker": "background.js"
     }
 }
