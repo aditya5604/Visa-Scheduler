@@ -47,38 +47,6 @@ def submit_data():
     else:
         return jsonify({"error": "Invalid request method"})
 
-@app.route("/login", methods=["POST"])
-def login():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        login_details["username"] = username
-        login_details["password"] = password
-    return jsonify({"password": password , "username": username})
-
-
-@app.route("/security_question", methods=["POST"])
-def security_question_route():
-    if request.method == "POST":
-        # Retrieve the data from the form
-        question_1 = request.form.get("question_1")
-        answer_1 = request.form.get("answer_1")
-        question_2 = request.form.get("question_2")
-        answer_2 = request.form.get("answer_2")
-        question_3 = request.form.get("question_3")
-        answer_3 = request.form.get("answer_3")
-        
-        # Store the data in the security_questions dictionary
-        security_questions["question_1"] = question_1
-        security_questions["answer_1"] = answer_1
-        security_questions["question_2"] = question_2
-        security_questions["answer_2"] = answer_2
-        security_questions["question_3"] = question_3
-        security_questions["answer_3"] = answer_3
-        
-        # You can process the security questions and answers here
-        
-    return jsonify(security_questions)
 
 @app.route("/captcha_input", methods=["POST"])
 def receive_captcha_from_frontend():
