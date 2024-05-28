@@ -237,31 +237,38 @@ class SlotFinder:
             # Wait for 3 seconds before quitting the browser
             time.sleep(10)
 
-            # Check if the desired element is available after login
+            # Check for 'reschedule_appointment' or 'continue_application' elements
             try:
-                schedule_appointment = await self.tab.select("#continue_application")
-                # If the element is found, redirect to the specified URL
-                await schedule_appointment.click()
+                schedule_appointment = await self.tab.query_selector("#reschedule_appointment")
+                if schedule_appointment:
+                    print("Found reschedule appointment element.")
+                    # If the element is found, click it
+                    await schedule_appointment.click()
+                else:
+                    continue_application = await self.tab.query_selector("#continue_application")
+                    if continue_application:
+                        print("Found continue application element.")
+                        # If the element is found, click it
+                        await continue_application.click()
+                    else:
+                        print("Neither reschedule appointment nor continue application elements were found.")
                 
-                #randomly scroll page down
+                # Randomly scroll page down 
                 await self.tab.scroll_down()
-                # randomly scroll the page up
+                # Randomly scroll page up
                 await self.tab.scroll_up()
                 
                 # Wait for the page to load
-                time.sleep(5)
+                await asyncio.sleep(10)
 
-                await self.tab.sleep(10)
-
-            except asyncio.exceptions.TimeoutError:
-                print("Error occurred while scheduling the appointment")
-
+            except asyncio.TimeoutError: 
+                print("Timeout occurred while looking for reschedule appointment or continue application elements.")
             except Exception as e:
                 print(f"An error occurred: {e}")
 
-        except  Exception as e:
+        except Exception as e:
             # Delete all cookies
-            print("Retrying After Sometimes,  Cooldown 10s Due to the error :" , e)
+            print("Retrying after some time, cooldown 10s due to the error:", e)
 
         # Close the browser
         self.driver.stop()

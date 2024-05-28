@@ -61,28 +61,16 @@
             </div>
             <hr class="hero-sec-divider">
             <div class="hero-section-2">
-                <p class="hero-sec-2-heading">Biometric Options</p>
+                <p class="hero-sec-2-heading">Appointment Options</p>
                 <div class="hero-sec-2-body1">
                     <div class="hero-sec-2-body1-first">
                         <img class="body1-icon" src="icons8-info.svg" alt="">
-                        <p class="body1-text">Select Origin Country:</p>
-                    </div>
-                    <div class="hero-sec-toggle-button">
-                        <label class="switch">
-                            <input type="checkbox">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="hero-sec-2-body2">
-                    <div class="hero-sec-2-body1-first">
-                        <img class="body1-icon" src="icons8-info.svg" alt="">
-                        <p class="body1-text">Dates range for Biometric Booking:</p>
+                        <p class="body1-text">Dates range for Appointment Booking:</p>
                     </div>
                     <div class="hero-sec-2-body2-second">
                         <div class="first-date">
                             <div class="date-container">
-                                <input class="date-input" type="date" placeholder="Start-Date" name="" id="">
+                                <input class="date-input" type="date" id="appointment-start-date" placeholder="Start-Date">
                             </div>
                         </div>
                         <div class="sec-2-body2-text">
@@ -90,7 +78,7 @@
                         </div>
                         <div class="second-date">
                             <div class="date-container">
-                                <input class="date-input" type="date" placeholder="End-Date" name="" id="">
+                                <input class="date-input" type="date" id="appointment-end-date" placeholder="End-Date">
                             </div>
                         </div>
                     </div>
@@ -102,42 +90,40 @@
                 <div class="hero-sec-2-body1">
                     <div class="hero-sec-2-body1-first">
                         <img class="body1-icon" src="icons8-info.svg" alt="">
-                        <p class="body1-text">Check all consulates for Interview slots:</p>
+                        <p class="body1-text" id="toggleText">Check all the cities in Priority Order</p>
                     </div>
                     <div class="hero-sec-toggle-button">
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" id="toggleCheckbox">
                             <span class="slider round"></span>
                         </label>
                     </div>
                 </div>
-                <div class="hero-sec-2-body2">
-                    <div class="hero-sec-2-body1-first">
-                        <img class="body1-icon" src="icons8-info.svg" alt="">
-                        <p class="body1-text">Dates range for Interview Booking:</p>
+                <div class="hero-sec-2-body2" id="citySelectionDiv">
+                    <label for="cities">Select cities:</label>
+                    <div class="hero-sec-2-body1-first" id="singleSelect">
+                        <select id="singleCitySelect">
+                            <option value="newyork">New York</option>
+                            <option value="losangeles">Los Angeles</option>
+                            <option value="chicago">Chicago</option>
+                            <option value="houston">Houston</option>
+                            <option value="phoenix">Phoenix</option>
+                        </select>
                     </div>
-                    <div class="hero-sec-2-body2-second">
-                        <div class="first-date">
-                            <div class="date-container">
-                                <input class="date-input" type="date" placeholder="Start-Date" name="" id="">
-                            </div>
-                        </div>
-                        <div class="sec-2-body2-text">
-                            <p>to</p>
-                        </div>
-                        <div class="second-date">
-                            <div class="date-container">
-                                <input class="date-input" type="date" placeholder="End-Date" name="" id="">
-                            </div>
-                        </div>
+                    <div class="hero-sec-2-body2-second" id="multiSelect" style="display: none;">
+                        <label><input type="checkbox" value="newyork"> New York</label>
+                        <label><input type="checkbox" value="losangeles"> Los Angeles</label>
+                        <label><input type="checkbox" value="chicago"> Chicago</label>
+                        <label><input type="checkbox" value="houston"> Houston</label>
+                        <label><input type="checkbox" value="phoenix"> Phoenix</label>
                     </div>
                 </div>
                 <div class="hero-sec-3-body3">
                     <div class="container">
                         <div class="hero-sec-2-body1-first">
                             <img class="body1-icon" src="icons8-info.svg" alt="">
-                            <p class="body3-text">Note: Non-premium version users can't select the interview date range,
-                                BOT will auto-pick the available slots based on your biometric dates.</p>
+                            <p class="body3-text">Note: Users can't select the interview date range,
+                                BOT will auto-pick the available slots based on your Appointment dates.</p>
                         </div>
                     </div>
                 </div>
@@ -372,6 +358,7 @@
             </div>
         </div>
     </div>
+    <script src="main_script.js"></script>
 </body>
 
 </html>
