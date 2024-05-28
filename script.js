@@ -42,8 +42,11 @@ function startCaptchaRefresh() {
 
 // Function to stop the CAPTCHA refresh interval
 function stopCaptchaRefresh() {
-  clearInterval(captchaInterval);
+  if (captchaInterval) {
+    clearInterval(captchaInterval);
+  }
 }
+
 
 // Event listener for visibility change
 document.addEventListener('visibilitychange', function() {
@@ -62,6 +65,10 @@ window.addEventListener("load", () => {
 // Submit CAPTCHA text to server
 function submitCaptchaText() {
   const captchaInput = document.getElementById("captchaInput").value;
+  if (!captchaInput) {
+    console.error("Captcha input is empty");
+    return;
+  }
   fetch("http://localhost:5000/captcha_input", {
       method: "POST",
       headers: {
