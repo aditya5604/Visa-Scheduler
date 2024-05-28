@@ -15,6 +15,38 @@ CORS(app)
 login_details = {}
 security_questions = {}
 
+@app.route("/submit_data", methods=["POST"])
+def submit_data():
+    global login_details, security_questions  # Declare globals
+
+    if request.method == "POST":
+        # Retrieve data from the request
+        data = request.json
+
+        # Process the data and save to global variables
+        login_details["originCountry"] = data.get("originCountry")
+        login_details["appointmentStartDate"] = data.get("appointmentStartDate")
+        login_details["appointmentEndDate"] = data.get("appointmentEndDate")
+        login_details["singleCity"] = data.get("singleCity")
+        login_details["selectedCities"] = data.get("selectedCities")
+        login_details["autoLoginEnabled"] = data.get("autoLoginEnabled")
+        login_details["username"] = data.get("userName")
+        login_details["password"] = data.get("password")
+
+        security_questions_list = data.get("securityQuestions", [])
+        for i, question in enumerate(security_questions_list, 1):
+            security_questions[f"question_{i}"] = question.get(f"question_{i}")
+            security_questions[f"answer_{i}"] = question.get(f"answer_{i}")
+
+        # For demonstration, we'll print the extracted data to the console
+        print("Login Details:", login_details)
+        print("Security Questions:", security_questions)
+
+        # Return a response
+        return jsonify({"status": "success"})
+    else:
+        return jsonify({"error": "Invalid request method"})
+
 @app.route("/login", methods=["POST"])
 def login():
     if request.method == "POST":
