@@ -509,16 +509,22 @@ class SlotFinder:
                                         print(e)
 
                             # Check if the end year is reached
-                            if current_year > end_year:
+                            if current_year > end_year or current_month > end_month:
                                 print("No available dates in the specified range")
                                 break
 
                         await self.submit_form()
                         print("Submitted the appointment.")
 
+                    else:
+                        print("No valid selection criteria provided.")
+                        raise ValueError("No valid selection criteria provided.")
+                else:
+                    print("No datepicker element found.")
+                    raise ValueError("No datepicker element found.")
             else:
-                print("No valid selection criteria provided.")
-                raise ValueError("No valid selection criteria provided.")
+                print("No valid city provided.")
+                raise ValueError("No valid city provided.")
 
         except asyncio.TimeoutError: 
             print("Timeout occurred while looking for reschedule appointment or continue application elements.")
