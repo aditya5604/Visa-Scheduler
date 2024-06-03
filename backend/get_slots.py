@@ -266,12 +266,18 @@ class SlotFinder:
                 if cities_list:
                     for city in cities_list:
                         try:
-                            await self.schedule_appointment(city, start_date, end_date)
-                            return  # Exit if appointment is scheduled successfully
+                            booking = await self.schedule_appointment(city, start_date, end_date)
+                            if booking:
+                                print(f"Appointment scheduled successfully for {city}.")
+                                break
                         except Exception as e:
                             print(f"Could not schedule appointment for {city}. Error: {e}")
                 elif city:
-                    await self.schedule_appointment(city, start_date, end_date)
+                    booking = await self.schedule_appointment(city, start_date, end_date)
+                    if booking:
+                        print(f"Appointment scheduled successfully for {city}.")
+                    else:
+                        print(f"Could not schedule appointment for {city}. No slots available.")
 
             except asyncio.TimeoutError: 
                 print("Timeout occurred while looking for reschedule appointment or continue application elements.")
@@ -288,6 +294,7 @@ class SlotFinder:
     # span_of_cities : list = [] , based_on_range : bool = False ,
     async def schedule_appointment(self , city : str = None ,  start_date : str = None , end_date : str = None):
         # book an appointment based on the range of cities or cities from the first date available between the range of dates start_date and end_date
+        booking_status = False
         try:
             # Wait for the page to load
             await self.tab.wait_for("#post_select" , timeout=120)
@@ -513,18 +520,22 @@ class SlotFinder:
                                 print("No available dates in the specified range")
                                 break
 
-                        await self.submit_form()
+                        form_status = await self.submit_form()
                         print("Submitted the appointment.")
 
                     else:
                         print("No valid selection criteria provided.")
-                        raise ValueError("No valid selection criteria provided.")
+                        raise ValueError("No valid selection criteria provided.")  
                 else:
                     print("No datepicker element found.")
                     raise ValueError("No datepicker element found.")
             else:
                 print("No valid city provided.")
                 raise ValueError("No valid city provided.")
+            
+            if form_status:
+                booking_status = True
+            return booking_status
 
         except asyncio.TimeoutError: 
             print("Timeout occurred while looking for reschedule appointment or continue application elements.")
@@ -551,6 +562,7 @@ class SlotFinder:
     # Time and submit the form
     async def submit_form(self):
         try:
+            form_status = False
             # select the timing available
             time_slots = await self.tab.query_selector_all('#time_select')
 
@@ -575,10 +587,12 @@ class SlotFinder:
                             await submit_button.click()
                             await self.tab.sleep(30)
                             print("Submitted the appointment.")
+                            form_status = True
                     else:
                         print("Submit button not found.")
             else:
                 print("No available time slots.")
+            return form_status
         except Exception as e:
             print(f"An error occurred: {e}")
 
