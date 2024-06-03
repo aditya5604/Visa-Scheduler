@@ -105,6 +105,7 @@ class SlotFinder:
     async def find_my_slots(self, username, password , security_questionsanswers , start_date , end_date , cities_list=None ,  city=None):
         try:
             await self.tab.sleep(10)
+            await self.tab.wait_for("#signInName" , timeout=120)
 
             # Find the username and password fields and enter the user-provided values
             username_field = await self.tab.select("#signInName")
@@ -155,7 +156,7 @@ class SlotFinder:
                 print("Captcha verification successful")
 
             # Wait for the security questions to appear
-            wait = await self.tab.wait_for("[id^='kbq']")
+            wait = await self.tab.wait_for("[id^='kbq']" , timeout=120)
 
             # Find the security question labels and answer fields
             security_question_labels = await self.tab.select_all("p[id^='kbq']")
@@ -260,7 +261,7 @@ class SlotFinder:
                 await self.tab.scroll_up()
                 
                 # Wait for the page to load
-                await self.tab.wait_for("#post_select" , timeout=60)
+                await self.tab.wait_for("#post_select" , timeout=120)
 
                 if cities_list:
                     for city in cities_list:
@@ -289,7 +290,7 @@ class SlotFinder:
         # book an appointment based on the range of cities or cities from the first date available between the range of dates start_date and end_date
         try:
             # Wait for the page to load
-            await self.tab.wait_for("#post_select" , timeout=60)
+            await self.tab.wait_for("#post_select" , timeout=120)
 
             # Find the element by id
             select_element = await self.tab.query_selector('#post_select')
