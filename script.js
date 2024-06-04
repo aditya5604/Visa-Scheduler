@@ -92,3 +92,21 @@ function submitCaptchaText() {
 document.getElementById("submitCaptchaButton").addEventListener("click", () => {
   submitCaptchaText();
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "View Full Image" link element
+  var viewFullImageLink = document.getElementById('viewFullImageLink');
+
+  // Add a click event listener to the link
+  viewFullImageLink.addEventListener('click', function(event) {
+      // Prevent the default behavior of the link
+      event.preventDefault();
+
+      // Open the image in a new tab
+      chrome.tabs.create({ url: 'http://localhost:5000/view_image' });
+
+      // Close the extension popup
+      window.close();
+  });
+});

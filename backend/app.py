@@ -76,5 +76,10 @@ def get_captcha_image():
     # Return the CAPTCHA image file
     return send_file("../Image/captcha_image.png", mimetype="image/png")
 
+@app.route("/view_image", methods=["GET"])
+def view_image():
+    # Return the CAPTCHA image file
+    return send_file("../Image/Full_image.png", mimetype="image/png")
+
 if __name__ == "__main__":
     app.run(debug=True)

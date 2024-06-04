@@ -10,6 +10,23 @@
         .captcha-image {
             max-width: 100%;
             height: auto;
+            margin-bottom: 2vh;
+        }
+      
+        #viewFullImageLink {
+        display: block;
+        padding: 5px 10px;
+        background-color: #54687e;
+        color: #ededed;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        transition: background-color 0.3s;
+        margin-bottom: 3vh;
+        }
+
+        #viewFullImageLink:hover {
+        background-color: #0056b3;
         }
     </style>
 </head>
@@ -27,13 +44,16 @@
             <!-- Add more options as needed -->
         </select>
 
+        <!-- CAPTCHA image -->
+        <img id="captchaImage" class="captcha-image" src="" alt="CAPTCHA Image" style="display: none;">
+
+        <!-- Link to view full image -->
+        <a id="viewFullImageLink" href="#" target="_blank">Can't See the captcha ⁉️ View Full Image</a>
+
         <!-- Space for CAPTCHA input -->
         <label for="captchaInput" class="block font-semibold mb-1 text-base">Enter CAPTCHA:</label>
         <input type="text" id="captchaInput" name="captchaInput" placeholder="Enter text here"
             class="border border-gray-300 rounded px-3 py-2 w-full mb-4 focus:outline-none focus:border-blue-500 text-base">
-
-        <!-- CAPTCHA image -->
-        <img id="captchaImage" class="captcha-image" src="" alt="CAPTCHA Image" style="display: none;">
 
         <!-- Submit CAPTCHA Button -->
         <button id="submitCaptchaButton"
