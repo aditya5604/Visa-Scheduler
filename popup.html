@@ -1,8 +1,34 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA Example</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .captcha-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 2vh;
+        }
+      
+        #viewFullImageLink {
+        display: block;
+        padding: 5px 10px;
+        background-color: #54687e;
+        color: #ededed;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        transition: background-color 0.3s;
+        margin-bottom: 3vh;
+        }
+
+        #viewFullImageLink:hover {
+        background-color: #0056b3;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -17,6 +43,12 @@
             <option value="profile3">Profile 3</option>
             <!-- Add more options as needed -->
         </select>
+
+        <!-- CAPTCHA image -->
+        <img id="captchaImage" class="captcha-image" src="" alt="CAPTCHA Image" style="display: none;">
+
+        <!-- Link to view full image -->
+        <a id="viewFullImageLink" href="#" target="_blank">Can't See the captcha ⁉️ View Full Image</a>
 
         <!-- Space for CAPTCHA input -->
         <label for="captchaInput" class="block font-semibold mb-1 text-base">Enter CAPTCHA:</label>
@@ -46,6 +78,8 @@
             class="block text-center text-gray-600 hover:text-gray-800 text-sm mt-4">Extension Settings</a>
     </div>
 
-  <script src="script.js"></script>
+    <!-- External JavaScript file -->
+    <script src="script.js"></script>
 </body>
+
 </html>

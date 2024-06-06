@@ -1,0 +1,12 @@
+Flask[async] == 3.0.3
+Flask-Cors ==4.0.0
+asyncio == 3.4.3
+websockets == 12.0
+selenium == 4.19.0
+requests == 2.31.0
+pillow == 10.3.0
+pytesseract == 0.3.10
+undetected-chromedriver==3.5.5
+python-dotenv==1.0.1
+opencv-python==4.9.0.80
+nodriver==0.28rc1
