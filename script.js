@@ -42,8 +42,11 @@ function startCaptchaRefresh() {
 
 // Function to stop the CAPTCHA refresh interval
 function stopCaptchaRefresh() {
-  clearInterval(captchaInterval);
+  if (captchaInterval) {
+    clearInterval(captchaInterval);
+  }
 }
+
 
 // Event listener for visibility change
 document.addEventListener('visibilitychange', function() {
@@ -62,6 +65,10 @@ window.addEventListener("load", () => {
 // Submit CAPTCHA text to server
 function submitCaptchaText() {
   const captchaInput = document.getElementById("captchaInput").value;
+  if (!captchaInput) {
+    console.error("Captcha input is empty");
+    return;
+  }
   fetch("http://localhost:5000/captcha_input", {
       method: "POST",
       headers: {
@@ -84,4 +91,22 @@ function submitCaptchaText() {
 // Event listener for submitting CAPTCHA text
 document.getElementById("submitCaptchaButton").addEventListener("click", () => {
   submitCaptchaText();
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "View Full Image" link element
+  var viewFullImageLink = document.getElementById('viewFullImageLink');
+
+  // Add a click event listener to the link
+  viewFullImageLink.addEventListener('click', function(event) {
+      // Prevent the default behavior of the link
+      event.preventDefault();
+
+      // Open the image in a new tab
+      chrome.tabs.create({ url: 'http://localhost:5000/view_image' });
+
+      // Close the extension popup
+      window.close();
+  });
 });

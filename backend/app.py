@@ -38,9 +38,9 @@ def submit_data():
             security_questions[f"question_{i}"] = question.get(f"question_{i}")
             security_questions[f"answer_{i}"] = question.get(f"answer_{i}")
 
-        # For demonstration, we'll print the extracted data to the console
-        print("Login Details:", login_details)
-        print("Security Questions:", security_questions)
+        # # For demonstration, we'll print the extracted data to the console
+        # print("Login Details:", login_details)
+        # print("Security Questions:", security_questions)
 
         # Return a response
         return jsonify({"status": "success"})
@@ -65,7 +65,7 @@ async def start_process():
         # Start the process with Selenium
 
         slot_finder = await SlotFinder().create()
-        await slot_finder.find_my_slots(login_details["username"], login_details["password"], security_questions)
+        await slot_finder.find_my_slots(login_details["username"], login_details["password"], security_questions , login_details["appointmentStartDate"] , login_details["appointmentEndDate"] , login_details["selectedCities"] , login_details["singleCity"])
         return jsonify({"status": "success"})
     else:
         return jsonify({"error": "Login details or security questions not provided"})
@@ -75,6 +75,11 @@ async def start_process():
 def get_captcha_image():
     # Return the CAPTCHA image file
     return send_file("../Image/captcha_image.png", mimetype="image/png")
+
+@app.route("/view_image", methods=["GET"])
+def view_image():
+    # Return the CAPTCHA image file
+    return send_file("../Image/Full_image.png", mimetype="image/png")
 
 if __name__ == "__main__":
     app.run(debug=True)

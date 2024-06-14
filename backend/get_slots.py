@@ -10,6 +10,7 @@ import time
 import io
 from PIL import Image
 import asyncio
+from datetime import datetime
 
 logging.basicConfig(level=30)
 captcha_input = None
@@ -101,9 +102,10 @@ class SlotFinder:
         except Exception as e:
             print("Error:", str(e))
 
-    async def find_my_slots(self, username, password , security_questionsanswers):
+    async def find_my_slots(self, username, password , security_questionsanswers , start_date , end_date , cities_list=None ,  city=None):
         try:
             await self.tab.sleep(10)
+            await self.tab.wait_for("#signInName" , timeout=120)
 
             # Find the username and password fields and enter the user-provided values
             username_field = await self.tab.select("#signInName")
@@ -154,7 +156,7 @@ class SlotFinder:
                 print("Captcha verification successful")
 
             # Wait for the security questions to appear
-            wait = await self.tab.wait_for("[id^='kbq']")
+            wait = await self.tab.wait_for("[id^='kbq']" , timeout=120)
 
             # Find the security question labels and answer fields
             security_question_labels = await self.tab.select_all("p[id^='kbq']")
@@ -259,13 +261,29 @@ class SlotFinder:
                 await self.tab.scroll_up()
                 
                 # Wait for the page to load
-                await asyncio.sleep(10)
+                await self.tab.wait_for("#post_select" , timeout=120)
+
+                if cities_list:
+                    for city in cities_list:
+                        try:
+                            booking = await self.schedule_appointment(city, start_date, end_date)
+                            if booking:
+                                print(f"Appointment scheduled successfully for {city}.")
+                                break
+                        except Exception as e:
+                            print(f"Could not schedule appointment for {city}. Error: {e}")
+                elif city:
+                    booking = await self.schedule_appointment(city, start_date, end_date)
+                    if booking:
+                        print(f"Appointment scheduled successfully for {city}.")
+                    else:
+                        print(f"Could not schedule appointment for {city}. No slots available.")
 
             except asyncio.TimeoutError: 
                 print("Timeout occurred while looking for reschedule appointment or continue application elements.")
             except Exception as e:
                 print(f"An error occurred: {e}")
-
+                            
         except Exception as e:
             # Delete all cookies
             print("Retrying after some time, cooldown 10s due to the error:", e)
@@ -273,7 +291,313 @@ class SlotFinder:
         # Close the browser
         self.driver.stop()
 
+    # span_of_cities : list = [] , based_on_range : bool = False ,
+    async def schedule_appointment(self , city : str = None ,  start_date : str = None , end_date : str = None):
+        # book an appointment based on the range of cities or cities from the first date available between the range of dates start_date and end_date
+        booking_status = False
+        try:
+            # Wait for the page to load
+            await self.tab.wait_for("#post_select" , timeout=120)
+
+            # Find the element by id
+            select_element = await self.tab.query_selector('#post_select')
+            print(select_element)
+
+            # Get all option elements within the select
+            options = await select_element.query_selector_all('option')
+            print(options)
+
+            # Iterate through the options and select the option or range of options as specified
+            if city:
+                for option in options:
+                    if city.lower() in (option.text).lower():
+                        selected_option = option
+                        print(f"Selected option: {selected_option}")
+                        await selected_option.select_option()
+                        break
+
+                # call the JavaScript function to dispatch a change event
+                await self.dispatch_change_event(self.tab , select_element)
+
+                # Check if the datepicker element was found
+                has_date_appointment  = await self.tab.select(".hasDatepicker")
+                print(has_date_appointment)
+
+                # If the datepicker element was found, select the date
+                if has_date_appointment:
+                    datepicker = await self.tab.select("#datepicker")
+                    print("Slot found for the selected city. Selecting the date...")
+
+                    # was usefull for earlier version of the website
+                    await datepicker.click()
+                    await self.tab.sleep(2)
+                    await datepicker.mouse_click()
+                    await self.tab.sleep(2)
+
+                    # make sure the start date is greater than the current date and less than the end date
+                    current_date = datetime.now().date()
+
+                    start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+                    end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                    print(type(start_date))
+                    print(type(end_date))
+
+                    if start_date >= current_date and start_date < end_date:
+                        print("Date range is valid")
+
+                        #Find the first group div
+                        select_element_group = await self.tab.query_selector('.ui-datepicker-group-first')
+                        print("Selected the First Group")
+
+                        select_element_header = await select_element_group.query_selector('.ui-datepicker-header')
+                        print("Selected the Header of the First Group")
+
+                        # Find the month and year elements
+                        select_element_title = await select_element_header.query_selector('.ui-datepicker-title')
+                        print("Selected the Title of the First Group")
+
+                        # Find the year element
+                        select_element_year = await select_element_title.query_selector('.ui-datepicker-year')
+                        print("Selected the Year of the First Group")
+
+                        select_element_month = await select_element_title.query_selector('.ui-datepicker-month')
+                        print("selected the Month of the First Group")
+
+                        # Get the year options
+                        year_options = await select_element_year.query_selector_all('option')
+                        print("Selected the Year Options")
+
+                        # Extract the start year from the provided start date
+                        start_year = start_date.year
+
+                        # Extract the end year from the provided end date
+                        end_year = end_date.year
+
+                        # Display the options to the user
+                        year_index = -1
+                        for index, option in enumerate(year_options):
+                            try:
+                                # Extract the year value from the option text
+                                year_value = int(option.text)
+                                print(f"{index}. {year_value}")
+
+                                # Select the option corresponding to the start year
+                                if year_value == start_year:
+                                    try:
+                                        await option.select_option()
+                                        print(f"Selected year: {year_value}")
+                                        year_index = index
+                                        print(type(year_index))
+                                        await self.dispatch_change_event(self.tab , select_element_year)
+                                        break
+                                    except Exception as e:
+                                        print(e)
+                                        await option.click()
+                            except Exception as e:
+                                print(e)
+                                continue
+                        
+                        # Loop through the months and years until a green day is found or the range is exhausted
+                        current_month = start_date.month
+                        current_year = start_year
+                        
+                        
+                        while current_year <= end_year:
+            
+                            # Find the datepicker element for the month
+                            select_element_month = await self.tab.select('.ui-datepicker-month')
+
+                            # Get the month options
+                            month_options = await select_element_month.query_selector_all('option')
+
+                            # Extract the end month from the provided end date
+                            end_month = end_date.month
+
+                            js_function = """
+                            function (select) {
+                                let optionsList = [];
+                                select.querySelectorAll('option').forEach(option => {
+                                    let optionText = option.textContent;
+                                    let optionValue = option.value;
+                                    optionsList.push({text: optionText, value: optionValue});
+                                });
+                                return optionsList;
+                            }
+                            """
+
+                            # Use the apply function to execute the JavaScript on the select element
+                            month_option_values = await select_element_month.apply(js_function, return_by_value=True)
+
+                            # option_values now contains the values of all option elements
+                            print(month_option_values)
+
+                            # Display the options to the user
+                            month_index = -1
+                            for index, option in enumerate(month_options):
+                                try:
+                                    # Extract the month value from the option text
+                                    for moption in month_option_values:
+                                        if moption['text'] == option.text:
+                                            month_value = int(option['value'])
+                                    print(f"{index}. {option.text}")
+
+                                    # Select the option corresponding to the start month
+                                    if month_value == current_month - 1:
+                                        await option.select_option()
+                                        print(f"Selected month: {option.text}")
+                                        month_index = index
+                                        await self.dispatch_change_event(self.tab , select_element_month)
+                                        break
+                                except Exception as e:
+                                    print(e)
+                                    continue
+                            
+                            first_available_date = None
+                            try:
+                                green_dates_elements = await self.tab.select_all('.greenday')
+
+                                for element in green_dates_elements:
+
+                                    day = element.text
+                                    day = datetime.strptime(day, "%d").day
+                                    print(day)
+
+                                    date = datetime(current_year, current_month, day).date()
+
+                                    if date >= start_date and date <= end_date:
+                                        first_available_date = element
+                                        break
+                                    else:
+                                        print("so condition is not met")
+                            except asyncio.exceptions.TimeoutError:
+                                    print("No greenday available. Increasing the month.")
+                                    
+                            except Exception as e:
+                                print(e)
+
+                            # If a matching date element is found, interact with it
+                            if first_available_date:
+                                # For example, click on the date if it's a link
+                                await first_available_date.click()
+                                await self.tab.sleep(5)
+                                print("Selected the first available date.")
+                                # await first_available_date.mouse_click()
+                                # await tab.sleep(5)
+                                break
+
+                            # Increment the month and year
+                            current_month = current_month + 1
+                            await self.tab.sleep(5)
+                            if current_month > 11:
+                                current_month = 1
+                                current_year = current_year + 1
+                                print("Current Year:", current_year)
+                                print("year_index:", year_options)
+                                for index, option in enumerate(year_options):
+                                    try:
+                                        # Extract the year value from the option text
+                                        year_value = int(option.text)
+                                        print(f"{index}. {year_value}")
+
+                                        # Select the option corresponding to the start year
+                                        if year_value == current_year:
+                                            try:
+                                                await option.select_option()
+                                                print(f"Selected year: {year_value}")
+                                                year_index = index
+                                                print(type(year_index))
+                                                await self.dispatch_change_event(self.tab , select_element_year)
+                                                await self.tab.sleep(5)
+                                                break
+                                            except Exception as e:
+                                                print(e)
+                                                await option.click()
+                                    except Exception as e:
+                                        print(e)
+
+                            # Check if the end year is reached
+                            if current_year > end_year or current_month > end_month:
+                                print("No available dates in the specified range")
+                                break
+
+                        form_status = await self.submit_form()
+                        print("Submitted the appointment.")
+
+                    else:
+                        print("No valid selection criteria provided.")
+                        raise ValueError("No valid selection criteria provided.")  
+                else:
+                    print("No datepicker element found.")
+                    raise ValueError("No datepicker element found.")
+            else:
+                print("No valid city provided.")
+                raise ValueError("No valid city provided.")
+            
+            if form_status:
+                booking_status = True
+            return booking_status
+
+        except asyncio.TimeoutError: 
+            print("Timeout occurred while looking for reschedule appointment or continue application elements.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+    # JavaScript function to dispatch a change event
+    async def dispatch_change_event(self, tab , select_element):
+        try:
+            js_dispatch_event = """
+            function dispatchChangeEvent(element) {
+                var event = new Event('change', { bubbles: true });
+                element.dispatchEvent(event);
+            }
+            """
+            # Dispatch the change event on the select element
+            await select_element.apply(js_dispatch_event, return_by_value=False)
+
+            # Find the schedule button and click it
+            await tab.sleep(5)         
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    
+    # Time and submit the form
+    async def submit_form(self):
+        try:
+            form_status = False
+            # select the timing available
+            time_slots = await self.tab.query_selector_all('#time_select')
+
+            # Check if there are any available time slots
+            if time_slots:
+                # Select the first available time slot by clicking on the radio input
+                first_available_slot = await time_slots[0].query_selector('input[type="radio"]')
+                if first_available_slot:
+                    await first_available_slot.click()
+                    await self.tab.sleep(5)
+                    print(first_available_slot)
+                    print("selected the first available slot w/o dispatch event")
+
+                    await self.dispatch_change_event(self.tab , first_available_slot)
+                    print("Selected the first available time slot with dispatch event")
+
+                    submit_button = await self.tab.query_selector('#submitbtn')
+                    print(submit_button)
+
+                    # Check if the submit button is available and not disabled
+                    if submit_button:
+                            await submit_button.click()
+                            await self.tab.sleep(30)
+                            print("Submitted the appointment.")
+                            form_status = True
+                    else:
+                        print("Submit button not found.")
+            else:
+                print("No available time slots.")
+            return form_status
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
 # # Create an instance of the SlotFinder class
 # slot_finder = SlotFinder()
 # # Call the find_my_slots method
 # slot_finder.find_my_slots("mdmazheruddin20117@gmail.com", "mazher@1234")
+#selenium grid concept
