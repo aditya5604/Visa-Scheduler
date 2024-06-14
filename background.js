@@ -3,7 +3,7 @@ let startTime;
 
 chrome.runtime.onInstalled.addListener(() => {
     // Create an alarm to check for slots every 10 minutes
-    chrome.alarms.create("checkSlotsAlarm", { delayInMinutes: 10, periodInMinutes: 10 });
+    chrome.alarms.create("checkSlotsAlarm", { delayInMinutes: 30, periodInMinutes: 30 });
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
