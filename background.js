@@ -1,6 +1,27 @@
 let timerInterval;
 let startTime;
 
+chrome.runtime.onInstalled.addListener(() => {
+    // Create an alarm to check for slots every 10 minutes
+    chrome.alarms.create("checkSlotsAlarm", { delayInMinutes: 30, periodInMinutes: 30 });
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === "checkSlotsAlarm") {
+        fetch("http://localhost:5000/start_process", {
+            method: "GET"
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("Process started successfully");
+            } else {
+                console.error("Error starting process:", response.statusText);
+            }
+        })
+        .catch(error => console.error("Error starting process:", error));
+    }
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "startTimer") {
         startTime = new Date().getTime();

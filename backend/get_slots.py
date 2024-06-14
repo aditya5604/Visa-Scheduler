@@ -342,7 +342,7 @@ class SlotFinder:
                     print(type(start_date))
                     print(type(end_date))
 
-                    if start_date > current_date and start_date < end_date:
+                    if start_date >= current_date and start_date < end_date:
                         print("Date range is valid")
 
                         #Find the first group div

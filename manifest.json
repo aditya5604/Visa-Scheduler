@@ -5,6 +5,7 @@
     "version": "1.0",
     "permissions": [
         "tabs",
+        "alarms",
         "storage"
     ],
     "host_permissions": [
